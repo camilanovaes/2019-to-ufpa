@@ -1,11 +1,10 @@
-%%%% Função da Questão 2.1
+%%%% Função da Questão 2
 %%
-%% Problema de transporte onde a quantidade total disponível nas m fontes
-%% é IGUAL à quantidade total demandada nos n destinos.
+%%   Problema de Transporte
 %%
 %%%%
 
-function [ x ] = transportation(w, s, d)
+function [ x ] = transportation(W, s, d)
   % Problema de transporte
   %
   % %%%%%%%%%%%%%%%%%
@@ -13,16 +12,46 @@ function [ x ] = transportation(w, s, d)
   % Input:
   %   s -> vetor com a disponibilidade das m fontes
   %   d -> vetor com a demanda dos n destinos
-  %   w -> matriz m x n com os custos wij
+  %   W -> matriz m x n com os custos wij
   %
   % Outputs:
   %   x -> matriz m x n com as unidades transportadas entre as fontes e
   %        os destinos
   %
   % %%%%%%%%%%%%%%%%%
+  % Verificação do tipo de problema:
+  %   - Balanceado: N_s == N_d
+  %   - Desbalanceado: N_s < N_d
+  %   - Desbalanceado: N_s > N_d
+  if (sum(s) == sum(d))
+    printf("Balanceado: Fonte = Demanda\n");
+    
+  elseif (sum(s) > sum(d))
+    % No caso desbalanceado, onde a o total da fonte é maior que o total 
+    % demandado, é adicionado uma demanda "dummy" para que o total da fonte 
+    % e o total demandando fique balanceado. Dessa forma, o valor demandado 
+    % do nó "dummy" será:
+    %     d = sum(fonte) - sum(demanda)
+    printf("Desbalanceado: Fonte > Demanda\n");
+ 
+    W(:,end+1) = zeros(size(W,1),1);
+    d(end+1)   = sum(s) - sum(d);
+    
+  elseif (sum(s) < sum(d))
+    % No caso desbalanceado, onde a o total da fonte é menor que o total 
+    % demandado, é adicionado uma fonte "dummy" para que o total da fonte 
+    % e o total demandando fique balanceado. Dessa forma, o valor do nó 
+    % "dummy" será:
+    %     d = sum(demanda) - sum(fonte)
+    printf("Desbalanceado: Fonte < Demanda\n");
+    
+    W(end+1,:) = zeros(1, size(W,2));
+    s(end+1)   = sum(d) - sum(s);
 
+  endif
+  
   % Transformando a matriz de custos em um vetor
-  w = w(:)';
+  W = W(:)';
   % Concatenando as restrições das disponibilidade das fontes com a demanda
   % dos detinos
   b = vertcat(s', d')';
@@ -42,7 +71,7 @@ function [ x ] = transportation(w, s, d)
   % Fazendo calculo do minimo usando programação linear
   lb = zeros(1,N_s*N_d);
   ub = [];
-  [ xmax, fmax ] = lp (w, A, b, lb, ub);
+  [ xmax, fmax ] = lp (W, A, b, lb, ub);
 
   % Transformando vetor x em uma matrix m x n
   x = reshape(xmax, N_d, []).';
