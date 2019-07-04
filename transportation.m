@@ -17,20 +17,19 @@ function [ x ] = transportation( W, s, d, verbose=false )
   %              dizendo a qual problema de transporte a entrada pertence               
   %
   % Outputs:
-  %   x -> matriz m x n com as unidades transportadas entre as fontes e
-  %        os destinos
+  %   x       -> matriz m x n com as unidades transportadas entre as fontes e
+  %              os destinos
   %
   % %%%%%%%%%%%%%%%%%
  
-  % Verificação do tipo de problema:
-  %   - Balanceado: N_s == N_d
-  %   - Desbalanceado: N_s < N_d
-  %   - Desbalanceado: N_s > N_d
+  %% Verificação do tipo de problema:
+  % Balanceado: Fonte == Demanda
   if (sum(s) == sum(d))
     if (verbose)
       printf("Balanceado: Fonte = Demanda\n");
     endif
-    
+
+  % Desbalanceado: Fonte > Demanda  
   elseif (sum(s) > sum(d))
     % No caso desbalanceado, onde a o total da fonte é maior que o total 
     % demandado, é adicionado uma demanda "dummy" para que o total da fonte 
@@ -43,7 +42,8 @@ function [ x ] = transportation( W, s, d, verbose=false )
  
     W(:,end+1) = zeros(size(W,1),1);
     d(end+1)   = sum(s) - sum(d);
-    
+
+  % Desbalanceado: Fonte < Demanda  
   elseif (sum(s) < sum(d))
     % No caso desbalanceado, onde a o total da fonte é menor que o total 
     % demandado, é adicionado uma fonte "dummy" para que o total da fonte 
@@ -93,11 +93,12 @@ function [ xmax, fmax ] = lp (f, A, b, lb, ub)
   % %%%%%%%%%%%%%%%%%
   %
   % Input:
-  %   f  -> vetor de n elementos com os coeficientes da função objetivo
-  %   A  -> matriz m x n que multiplica as variáveis nas desigualdades de restrições
-  %   b  -> vetor de m elementos que indica as m restrições
-  %   lb ->
-  %   ub ->
+  %   f    -> vetor de n elementos com os coeficientes da função objetivo
+  %   A    -> matriz m x n que multiplica as variáveis nas desigualdades
+  %           de restrições
+  %   b    -> vetor de m elementos que indica as m restrições
+  %   lb   -> vetor com o limite inferior das variáveis
+  %   ub   -> vetor com o limite superior das variáveis
   %
   % Outputs:
   %   xmax -> vetor x que maximiza a função alvo
