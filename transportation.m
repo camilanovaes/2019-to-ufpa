@@ -4,27 +4,32 @@
 %%
 %%%%
 
-function [ x ] = transportation(W, s, d)
+function [ x ] = transportation( W, s, d, verbose=false )
   % Problema de transporte
   %
   % %%%%%%%%%%%%%%%%%
   %
   % Input:
-  %   s -> vetor com a disponibilidade das m fontes
-  %   d -> vetor com a demanda dos n destinos
-  %   W -> matriz m x n com os custos wij
+  %   W       -> matriz m x n com os custos wij
+  %   s       -> vetor com a disponibilidade das m fontes
+  %   d       -> vetor com a demanda dos n destinos
+  %   verbose -> variável para debug. Se for verdadeiro, printa uma mensagem
+  %              dizendo a qual problema de transporte a entrada pertence               
   %
   % Outputs:
   %   x -> matriz m x n com as unidades transportadas entre as fontes e
   %        os destinos
   %
   % %%%%%%%%%%%%%%%%%
+ 
   % Verificação do tipo de problema:
   %   - Balanceado: N_s == N_d
   %   - Desbalanceado: N_s < N_d
   %   - Desbalanceado: N_s > N_d
   if (sum(s) == sum(d))
-    printf("Balanceado: Fonte = Demanda\n");
+    if (verbose)
+      printf("Balanceado: Fonte = Demanda\n");
+    endif
     
   elseif (sum(s) > sum(d))
     % No caso desbalanceado, onde a o total da fonte é maior que o total 
@@ -32,7 +37,9 @@ function [ x ] = transportation(W, s, d)
     % e o total demandando fique balanceado. Dessa forma, o valor demandado 
     % do nó "dummy" será:
     %     d = sum(fonte) - sum(demanda)
-    printf("Desbalanceado: Fonte > Demanda\n");
+    if (verbose)
+      printf("Desbalanceado: Fonte > Demanda\n");
+    endif
  
     W(:,end+1) = zeros(size(W,1),1);
     d(end+1)   = sum(s) - sum(d);
@@ -43,7 +50,9 @@ function [ x ] = transportation(W, s, d)
     % e o total demandando fique balanceado. Dessa forma, o valor do nó 
     % "dummy" será:
     %     d = sum(demanda) - sum(fonte)
-    printf("Desbalanceado: Fonte < Demanda\n");
+    if (verbose)
+      printf("Desbalanceado: Fonte < Demanda\n");
+    endif
     
     W(end+1,:) = zeros(1, size(W,2));
     s(end+1)   = sum(d) - sum(s);
