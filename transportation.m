@@ -4,7 +4,7 @@
 %%
 %%%%
 
-function [ x ] = transportation( W, s, d, verbose=false )
+function [ x ] = transportation( W, s, d, verbose=true )
   % Problema de transporte
   %
   % %%%%%%%%%%%%%%%%%

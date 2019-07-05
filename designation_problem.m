@@ -25,6 +25,6 @@ function [ x ] = designation_problem( W )
   % a 1, a demanda de cada destino é 1 e a capacidade máxima de cada arco também
   % é 1. Logo, utilizamos a mesma função de transporte, chamada de 
   % 'transportation' para resolver o problema de designação.
-  [ x ]  = transportation(W, p, t);
+  [ x ]  = transportation(W, p, t, verbose=false);
   
 endfunction
