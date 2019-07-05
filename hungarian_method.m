@@ -1,44 +1,31 @@
 %%%% Funcao da Questao 3.2
 %%
-%% Passos do metodo Hungaro
-%%  1. Subtraia a menor entrada de cada linha de todas as entradas da mesma
-%%     linha. Dessa forma, cada linha tera pelo menos uma entrada zero e todas
-%%     as outras sao nao-negativas.
-%%
-%%  2. Subtraia a menor entrada de cada coluna de todas as entradas de mesma
-%%     coluna. Dessa forma, cada coluna terao pelo menos uma entrada zero e todas
-%%     as outras entradas sao nao-negativas.
-%%
-%%  3. Risque um traco ao longo de linhas e colunas de tal modo que todas as
-%%     entradas zero da matriz-custo fiquem riscadas. Para isso, utilize um
-%%     numero minimo de tracos.
-%%
-%%  4. Teste de otimizacao
-%%     a. Se o numero miinimo de tracos necessarios para cobrir os zeros eh n,
-%%        entao uma alocacao otima de zeros eh posssivel e encerramos o
-%%        procedimento.
-%%     b. Se o numero minimo de tracos necessarios para cobrir os zeros eh menor
-%%        que n, entao ainda nao e possivel uma alocacao otima de zeros. Nesse
-%%        caso vai para o passo 5.
-%%
-%%  5. Determine a menor entrada nao riscada por nenhum traco. Subtraia esta
-%%     entrada de todas as entradas nao riscada e depois a some a todas as
-%%     entradas riscadas tanto horizontais quanto verticalmente. Retorne ao
-%%     passo 3.
-%%
-%% Referências:
-%% - https://bri.ifsp.edu.br/portal2/phocadownload/2016/Matematica/TCC/2015/Utilizando%20o%20Mtodo%20Hngaro%20e%20o%20Matlab%20em%20Problemas%20de%20Alocao%20de%20Tarefas.pdf
-%% - https://www.mathworks.com/matlabcentral/fileexchange/20328-munkres-assignment-algorithm
+%%  Metodo Hungaro
+%% 
+%%  Equipe:
+%%    - Camila Novaes
+%%    - Felipe Reis
+%%    - Masaaki Nakamura
 %%%%
 
-function [assignment] = hungarian_method(W)
+function [ X ] = hungarian_method(W)
+  % Método Hungaro
+  %
+  % %%%%%%%%%%%%%%%%%
+  %
+  % Input:
+  %   W -> matriz n x n com os custos wij
+  %
+  % Outputs:
+  %   X -> matriz n x n com as associações entre os nós i e j
+  %
+  % %%%%%%%%%%%%%%%%%
 
   %% Pre-Passo
   % Padronizacao das matrizes inseridas na funcao para que todas possam
   % ser resolvidas pelo algorithm hungaro
 
-  assignment = false(size(W));
-  cost = 0;
+  X = false(size(W));
 
   W(W~=W)=Inf;
   validMat = W<Inf;
@@ -72,8 +59,9 @@ function [assignment] = hungarian_method(W)
   end
 
 while 1
-  %% Passo 3 cria um vetor para indicar todas as entradas com zero ao longo das
-  %% colunas e das linhas
+  %% Passo 3
+  % Cria um vetor para indicar todas as entradas com zero ao longo das
+  % colunas e das linhas
   primeZ = false(n);
   coverColumn = any(starZ);
 
@@ -83,7 +71,8 @@ while 1
 
   coverRow = false(n,1);
   while 1
-    % Passo 4 - verifica se a solucao ja esta em um caso otimo. Caso contrario,
+    %% Passo 4
+    % Verifica se a solucao ja esta em um caso otimo. Caso contrario,
     % vai para o passo 5
     zP(:) = false;
     zP(~coverRow,~coverColumn) = ~dMat(~coverRow,~coverColumn);
@@ -116,21 +105,12 @@ while 1
           break
         end
     end
-  %  Sei que essa ultima parte contribui no codigo, mas tenho minhas duvidas
-  %  sobre ela.
-
-  %**************************************************************************
-  % STEP 5:
-  %  Construct a series of alternating primed and starred zeros as
-  %  follows:
-  %  Let Z0 represent the uncovered primed zero found in Step 4.
-  %  Let Z1 denote the starred zero in the column of Z0 (if any).
-  %  Let Z2 denote the primed zero in the row of Z1 (there will always
-  %  be one).  Continue until the series terminates at a primed zero
-  %  that has no starred zero in its column.  Unstar each starred
-  %  zero of the series, star each primed zero of the series, erase
-  %  all primes and uncover every line in the matrix.  Return to Step 3.
-  %**************************************************************************
+  
+    %% Passo 5
+    %  Determine a menor entrada nao riscada por nenhum traco. Subtraia esta
+    %  entrada de todas as entradas nao riscada e depois a some a todas as
+    %  entradas riscadas tanto horizontais quanto verticalmente. Retorne ao
+    %  passo 3
     rowZ1 = starZ(:,uZc);
     starZ(uZr,uZc)=true;
       while any(rowZ1)
@@ -142,9 +122,7 @@ while 1
       end
   end
 
-  % Cost of assignment
-  assignment(validRow,validCol) = starZ(1:nRows,1:nCols);
-  cost = sum(W(assignment));
+  X(validRow,validCol) = starZ(1:nRows,1:nCols);
 
 endfunction
 
