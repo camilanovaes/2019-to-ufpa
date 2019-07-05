@@ -19,11 +19,12 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
   % %%%%%%%%%%%%%%%%%
 
   num_x    = length(w); % Quantidade de variaveis X
-  flag_int = 1;         % Variável de controle
   N        = 1;
-  x_resp   = 0;
+  flag_int = 1;         % Variável de controle
+  x_resp   = 0;         % Variável de controle
 
-  % Se for 'nan', referente a primeira iteração, cria os vetores corretamente.
+  % Se for 'nan', referente a primeira iteração, cria os vetores do limite
+  % inferior e superior.
   if (isnan(lb) && isnan(ub))
     lb = zeros(num_x, 1);
     ub = inf*ones(num_x, 1);
@@ -36,10 +37,10 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
     % Se não for inteiro
     if ( (!isnan(v)) && (!~mod(X(i),1)) )
       if (X(i) > x_resp)
-        x_resp = X(i);
-        flag_int = 0;
+        x_resp   = X(i);
         x_val    = floor(X(i));
         x_index  = i;
+        flag_int = 0;
       endif
     endif
   endfor
@@ -47,6 +48,10 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
     % Se todos os elementos forem inteiros
     if (flag_int == 1)
       if (isnan(v))
+        % Se para uma dada restrição não houver resposta, uma vez que o problema
+        % é de maximização, é atribuido o valor de '-inf' para o fmax para que
+        % não haja problemas quando houver a comparação para pegar o maior
+        % valor de fmax
         xmax = NA;
         N    = 1;
         fmax = -inf;
@@ -59,12 +64,17 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
       lb1 = lb2 = lb;
       ub1 = ub2 = ub;
 
+      % Define os novos valores para o limite superior e inferior
       lb1(x_index) = x_val + 1;
       ub2(x_index) = x_val;
 
-      [xmax1, fmax1, N1] = branch_and_bound (w, A, b, lb1, ub1);
-      [xmax2, fmax2, N2] = branch_and_bound (w, A, b, lb2, ub2);
+      % Roda a função branch_and_bound de forma recursiva para a esquerda 
+      % (visualizando o problema como uma arvore) e posteriormente para a 
+      % direita.
+      [xmax2, fmax2, N2] = branch_and_bound (w, A, b, lb2, ub2); % Esquerda
+      [xmax1, fmax1, N1] = branch_and_bound (w, A, b, lb1, ub1); % Direita
 
+      % Pega o maior valor entre fmax1 e fmax2
       if (fmax1 > fmax2)
         xmax = xmax1;
         N    = N1+N2;
@@ -75,8 +85,6 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
         fmax = fmax2;
       endif
     endif
-
-    return;
 endfunction
 
 function [ xmax, fmax ] = lp (f, A, b, lb, ub)
@@ -88,8 +96,8 @@ function [ xmax, fmax ] = lp (f, A, b, lb, ub)
   %   f  -> vetor de n elementos com os coeficientes da função objetivo
   %   A  -> matriz m x n que multiplica as variáveis nas desigualdades de restrições
   %   b  -> vetor de m elementos que indica as m restrições
-  %   lb ->
-  %   ub ->
+  %   lb -> limite inferior das variaveis x
+  %   ub -> limite superior das variaveis x
   %
   % Outputs:
   %   xmax -> vetor x que maximiza a função alvo
