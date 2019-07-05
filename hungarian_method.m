@@ -107,10 +107,6 @@ while 1
     end
   
     %% Passo 5
-    %  Determine a menor entrada nao riscada por nenhum traco. Subtraia esta
-    %  entrada de todas as entradas nao riscada e depois a some a todas as
-    %  entradas riscadas tanto horizontais quanto verticalmente. Retorne ao
-    %  passo 3
     rowZ1 = starZ(:,uZc);
     starZ(uZr,uZc)=true;
       while any(rowZ1)
