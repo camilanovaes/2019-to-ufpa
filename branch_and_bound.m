@@ -1,5 +1,5 @@
 function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
-   % Branch and Bound
+  % Branch and Bound
   %
   % %%%%%%%%%%%%%%%%%
   %
@@ -21,6 +21,7 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
   num_x    = length(w); % Quantidade de variaveis X
   flag_int = 1;         % Variável de controle
   N        = 1;
+  x_resp   = 0;
 
   % Se for 'nan', referente a primeira iteração, cria os vetores corretamente.
   if (isnan(lb) && isnan(ub))
@@ -34,9 +35,12 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
   for i = 1:num_x
     % Se não for inteiro
     if ( (!isnan(v)) && (!~mod(X(i),1)) )
-      flag_int = 0;
-      x_val    = floor(X(i));
-      x_index  = i;
+      if (X(i) > x_resp)
+        x_resp = X(i);
+        flag_int = 0;
+        x_val    = floor(X(i));
+        x_index  = i;
+      endif
     endif
   endfor
 
