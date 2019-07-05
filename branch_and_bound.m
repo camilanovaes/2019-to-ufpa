@@ -5,8 +5,8 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
   %
   % Input:
   %   w  -> vetor de n elementos com os coeficientes da função objetivo
-  %   A  -> matriz m x n que multiplica as variáveis nas desigualdades 
-  %         de restrições 
+  %   A  -> matriz m x n que multiplica as variáveis nas desigualdades
+  %         de restrições
   %   b  -> vetor de m elementos que indica as m restrições
   %   lb -> limite inferior das variáveis x
   %   ub -> limite superior das variáveis x
@@ -21,11 +21,11 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
   num_x    = length(w); % Quantidade de variaveis X
   flag_int = 1;         % Variável de controle
   N        = 1;
-  
+
   % Se for 'nan', referente a primeira iteração, cria os vetores corretamente.
   if (isnan(lb) && isnan(ub))
     lb = zeros(num_x, 1);
-    ub = inf*ones(num_x, 1);  
+    ub = inf*ones(num_x, 1);
   endif
 
   % Roda a a função de programação linear
@@ -60,7 +60,7 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
 
       [xmax1, fmax1, N1] = branch_and_bound (w, A, b, lb1, ub1);
       [xmax2, fmax2, N2] = branch_and_bound (w, A, b, lb2, ub2);
-      
+
       if (fmax1 > fmax2)
         xmax = xmax1;
         N    = N1+N2;
@@ -71,7 +71,7 @@ function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
         fmax = fmax2;
       endif
     endif
-    
+
     return;
 endfunction
 

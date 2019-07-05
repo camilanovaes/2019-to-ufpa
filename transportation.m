@@ -14,14 +14,14 @@ function [ x ] = transportation( W, s, d, verbose=true )
   %   s       -> vetor com a disponibilidade das m fontes
   %   d       -> vetor com a demanda dos n destinos
   %   verbose -> variável para debug. Se for verdadeiro, printa uma mensagem
-  %              dizendo a qual problema de transporte a entrada pertence               
+  %              dizendo a qual problema de transporte a entrada pertence
   %
   % Outputs:
   %   x       -> matriz m x n com as unidades transportadas entre as fontes e
   %              os destinos
   %
   % %%%%%%%%%%%%%%%%%
- 
+
   %% Verificação do tipo de problema:
   % Balanceado: Fonte == Demanda
   if (sum(s) == sum(d))
@@ -29,36 +29,36 @@ function [ x ] = transportation( W, s, d, verbose=true )
       printf("Balanceado: Fonte = Demanda\n");
     endif
 
-  % Desbalanceado: Fonte > Demanda  
+  % Desbalanceado: Fonte > Demanda
   elseif (sum(s) > sum(d))
-    % No caso desbalanceado, onde a o total da fonte é maior que o total 
-    % demandado, é adicionado uma demanda "dummy" para que o total da fonte 
-    % e o total demandando fique balanceado. Dessa forma, o valor demandado 
+    % No caso desbalanceado, onde a o total da fonte é maior que o total
+    % demandado, é adicionado uma demanda "dummy" para que o total da fonte
+    % e o total demandando fique balanceado. Dessa forma, o valor demandado
     % do nó "dummy" será:
     %     d = sum(fonte) - sum(demanda)
     if (verbose)
       printf("Desbalanceado: Fonte > Demanda\n");
     endif
- 
+
     W(:,end+1) = zeros(size(W,1),1);
     d(end+1)   = sum(s) - sum(d);
 
-  % Desbalanceado: Fonte < Demanda  
+  % Desbalanceado: Fonte < Demanda
   elseif (sum(s) < sum(d))
-    % No caso desbalanceado, onde a o total da fonte é menor que o total 
-    % demandado, é adicionado uma fonte "dummy" para que o total da fonte 
-    % e o total demandando fique balanceado. Dessa forma, o valor do nó 
+    % No caso desbalanceado, onde a o total da fonte é menor que o total
+    % demandado, é adicionado uma fonte "dummy" para que o total da fonte
+    % e o total demandando fique balanceado. Dessa forma, o valor do nó
     % "dummy" será:
     %     d = sum(demanda) - sum(fonte)
     if (verbose)
       printf("Desbalanceado: Fonte < Demanda\n");
     endif
-    
+
     W(end+1,:) = zeros(1, size(W,2));
     s(end+1)   = sum(d) - sum(s);
 
   endif
-  
+
   % Transformando a matriz de custos em um vetor
   W = W(:)';
   % Concatenando as restrições das disponibilidade das fontes com a demanda
