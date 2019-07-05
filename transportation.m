@@ -1,7 +1,11 @@
-%%%% Funcao da Questao 2
+%%%% Função da Questão 2.1, 2.2 e 2.3
 %%
-%%   Problema de Transporte
-%%
+%%  Problema de Transporte
+%% 
+%%  Equipe:
+%%    - Camila Novaes
+%%    - Felipe Reis
+%%    - Masaaki Nakamura
 %%%%
 
 function [ x ] = transportation( W, s, d, verbose=true )

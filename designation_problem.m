@@ -1,8 +1,13 @@
 %%%% Função da Questão 3.1
 %%
-%%   Problema de Designação usando LP
-%%
+%%  Problema de Designação usando Programação Linear
+%% 
+%%  Equipe:
+%%    - Camila Novaes
+%%    - Felipe Reis
+%%    - Masaaki Nakamura
 %%%%
+
 
 function [ x ] = designation_problem( W )
   % Problema de designação

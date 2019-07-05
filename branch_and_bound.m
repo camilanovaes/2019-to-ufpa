@@ -1,3 +1,13 @@
+%%%% Funcao da Questao 1
+%%
+%%  Branch and Bound
+%% 
+%%  Equipe:
+%%    - Camila Novaes
+%%    - Felipe Reis
+%%    - Masaaki Nakamura
+%%%%
+
 function [xmax, fmax, N] = branch_and_bound (w, A, b, lb=nan, ub=nan)
   % Branch and Bound
   %
