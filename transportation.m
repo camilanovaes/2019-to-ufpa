@@ -8,7 +8,7 @@
 %%    - Masaaki Nakamura
 %%%%
 
-function [ x ] = transportation( W, s, d, verbose=true )
+function [ x, fmin ] = transportation( W, s, d, verbose=true )
   % Problema de transporte
   %
   % %%%%%%%%%%%%%%%%%
@@ -64,7 +64,7 @@ function [ x ] = transportation( W, s, d, verbose=true )
   endif
 
   % Transformando a matriz de custos em um vetor
-  W = W(:)';
+  W = W'(:)';
   % Concatenando as restricoes das disponibilidade das fontes com a demanda
   % dos detinos
   b = vertcat(s', d')';
@@ -84,14 +84,14 @@ function [ x ] = transportation( W, s, d, verbose=true )
   % Fazendo calculo do minimo usando programacao linear
   lb = zeros(1,N_s*N_d);
   ub = [];
-  [ xmax, fmax ] = lp (W, A, b, lb, ub);
+  [ xmin, fmin ] = lp (W, A, b, lb, ub);
 
   % Transformando vetor x em uma matrix m x n
-  x = reshape(xmax, N_d, []).';
+  x = reshape(xmin, N_d, []).';
 
 endfunction
 
-function [ xmax, fmax ] = lp (f, A, b, lb, ub)
+function [ xmin, fmin ] = lp (f, A, b, lb, ub)
   % Programacao Linear
   %
   % %%%%%%%%%%%%%%%%%
@@ -105,8 +105,8 @@ function [ xmax, fmax ] = lp (f, A, b, lb, ub)
   %   ub   -> vetor com o limite superior das variaveis
   %
   % Outputs:
-  %   xmax -> vetor x que maximiza a funcao alvo
-  %   fmax -> o valor da funcao alvo no ponto máximo
+  %   xmin -> vetor x que minimiza a funcao alvo
+  %   fmin -> o valor da funcao alvo no ponto mínimo
   %
   % %%%%%%%%%%%%%%%%%
 
@@ -117,7 +117,7 @@ function [ xmax, fmax ] = lp (f, A, b, lb, ub)
   param.msglev = 0;     % Nao retorna mensagens de erros ou warnings
   param.itlim  = 1000;  % Limite de iteracoes
 
-  [xmax, fmax, status, extra] = ...
+  [xmin, fmin, status, extra] = ...
       glpk (f, A, b, lb, ub, ctype, vartype, s, param);
 
 endfunction
